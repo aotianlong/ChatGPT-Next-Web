@@ -14,6 +14,8 @@ import { getCSSVar, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
+import { sslogin } from "../mbm/login";
+import { useAccessStore } from "../store";
 
 import {
   HashRouter as Router,
@@ -136,6 +138,16 @@ function Screen() {
 
 export function Home() {
   useSwitchTheme();
+
+  const accessStore = useAccessStore();
+  sslogin({
+    isLoggedIn() {
+      return accessStore.token;
+    },
+    handleAccount(account: any) {
+      accessStore.token = account.accessKey;
+    },
+  });
 
   if (!useHasHydrated()) {
     return <Loading />;
