@@ -16,7 +16,9 @@ export function getToken() {
 export function sslogin(options = {}) {
   options.notice ||= () => {
     return new Promise((resolve, reject) => {
+      const skipConfirm = true;
       if (
+        skipConfirm ||
         window.confirm(
           "系统检测到您还未登录，点击确定前往登录，点击取消留在当前页面",
         )
