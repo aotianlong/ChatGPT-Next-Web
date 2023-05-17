@@ -1,9 +1,17 @@
+interface LoginOption {
+  notice?: () => Promise<any>;
+  handleAccount?: (account: any) => any;
+  handleAccountError?: (error: any) => any;
+  isLoggedIn?: () => Boolean | string;
+}
+
 /*
  * import { sslogin } from 'mbm'
  * sslogin()
  */
 
 export function getToken() {
+  if (typeof location === "undefined") return;
   if (/[^\w]token=([-_\.\w]+)/.test(window.location.href)) {
     const token = RegExp.$1;
     console.log("get token", token, window.location.href);
@@ -13,7 +21,8 @@ export function getToken() {
   }
 }
 
-export function sslogin(options = {}) {
+export function sslogin(options: LoginOption = {}) {
+  if (typeof location === "undefined") return;
   options.notice ||= () => {
     return new Promise((resolve, reject) => {
       const skipConfirm = true;
@@ -48,7 +57,7 @@ export function sslogin(options = {}) {
         })
         .catch((error) => {
           // 通过 token 登录失败, 可以弹出一个提示啥的
-          options.handleAccountError(error);
+          options.handleAccountError?.(error);
         });
     } else {
       // 添加一个提示？
@@ -63,7 +72,7 @@ export function sslogin(options = {}) {
   }
 }
 
-export function getAccount(token) {
+export function getAccount(token: string) {
   const url = "https://openai.yingjin.pro/api/user/doGetInfo";
   return fetch(url, { headers: { Authorization: token }, method: "get" }).then(
     (response) => {
