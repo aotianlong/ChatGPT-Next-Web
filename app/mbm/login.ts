@@ -52,18 +52,20 @@ export function sslogin(options: LoginOption = {}) {
   const isLoggedIn = options.isLoggedIn?.();
   // 在未登录的情况下，或者有token的情况下，会处理通过token登录逻辑
   if (!isLoggedIn || token) {
-    if (token && lastToken != token) {
-      getAccount(token)
-        .then((account) => {
-          lastToken = token;
-          options.handleAccount?.(account)?.then(() => {
-            // 成功处理登录事件
+    if (token) {
+      if (lastToken != token) {
+        getAccount(token)
+          .then((account) => {
+            lastToken = token;
+            options.handleAccount?.(account)?.then(() => {
+              // 成功处理登录事件
+            });
+          })
+          .catch((error) => {
+            // 通过 token 登录失败, 可以弹出一个提示啥的
+            options.handleAccountError?.(error);
           });
-        })
-        .catch((error) => {
-          // 通过 token 登录失败, 可以弹出一个提示啥的
-          options.handleAccountError?.(error);
-        });
+      }
     } else {
       // 添加一个提示？
       options.notice?.()?.then(() => {
