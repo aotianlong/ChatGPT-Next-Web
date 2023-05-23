@@ -47,7 +47,9 @@ export function sslogin(options: LoginOption = {}) {
     "https://openai.mbmzone.com/singleLogin?redirectUrl=" + redirectUrl;
   const token = getToken();
   // 是否登录的判断留给外面
-  if (!options.isLoggedIn?.()) {
+  const isLoggedIn = options.isLoggedIn?.();
+  // 在未登录的情况下，或者有token的情况下，会处理通过token登录逻辑
+  if (!isLoggedIn || token) {
     if (token) {
       getAccount(token)
         .then((account) => {
