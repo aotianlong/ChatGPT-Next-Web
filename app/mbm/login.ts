@@ -5,6 +5,8 @@ interface LoginOption {
   isLoggedIn?: () => Boolean | string;
 }
 
+let lastToken = "";
+
 /*
  * import { sslogin } from 'mbm'
  * sslogin()
@@ -50,9 +52,10 @@ export function sslogin(options: LoginOption = {}) {
   const isLoggedIn = options.isLoggedIn?.();
   // 在未登录的情况下，或者有token的情况下，会处理通过token登录逻辑
   if (!isLoggedIn || token) {
-    if (token) {
+    if (token && lastToken != token) {
       getAccount(token)
         .then((account) => {
+          lastToken = token;
           options.handleAccount?.(account)?.then(() => {
             // 成功处理登录事件
           });
