@@ -147,7 +147,9 @@ export function Home() {
     },
     handleAccount(account: any) {
       accessStore.token = account.accessKey;
-      const modelConfig = {..config.modelConfig, model: 'gpt-4'}
+      config.modelConfig.model = 'gpt-4';
+      const modelConfig = {...config.modelConfig};
+      modelConfig.model = 'gpt-4'
       config.update((config) => (config.modelConfig = modelConfig));
     },
   });
