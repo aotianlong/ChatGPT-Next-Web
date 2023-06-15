@@ -833,6 +833,7 @@ export function Chat() {
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
+              {!isUser && <TokensNotice completionText={message.content} />}
             </>
           );
         })}
