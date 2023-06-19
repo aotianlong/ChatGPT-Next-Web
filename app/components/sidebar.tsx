@@ -14,6 +14,7 @@ import PluginIcon from "../icons/plugin.svg";
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
+import { RechargeButton } from "../mbm/recharge";
 
 import {
   MAX_SIDEBAR_WIDTH,
@@ -168,8 +169,8 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank">
-              <IconButton icon={<GithubIcon />} shadow />
+            <a href="https://openai.mbmzone.com/mbm-gpt/recharge" target="_blank">
+              <RechargeButton />
             </a>
           </div>
         </div>
