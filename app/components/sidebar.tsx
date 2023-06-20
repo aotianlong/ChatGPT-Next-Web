@@ -169,7 +169,7 @@ export function SideBar(props: { className?: string }) {
           </div>
           <div className={styles["sidebar-action"]}>
             <a href="https://openai.mbmzone.com/mbm-gpt/recharge" target="_blank">
-              <RechargeButton />
+              <IconButton text="充值我的账户"></IconButton>
             </a>
           </div>
         </div>
