@@ -14,9 +14,9 @@ const promptPrice = {
 }
 
 export default function TokensNotice(props: {
-  completionText: string;
-  promptText: string;
-  showModel: boolean
+  completionText?: string;
+  promptText?: string;
+  showModel?: boolean
 }) {
   const state = useAppConfig.getState()
   const chatStore = useChatStore.getState();
