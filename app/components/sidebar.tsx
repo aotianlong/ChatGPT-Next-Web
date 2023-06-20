@@ -119,7 +119,9 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <img src="/MBM-openai-logo.png" style={{width: '100%',height:'60px'}} />
+	<a href="https://openai.mbmzone.com" target="_blank">
+        	<img src="/mbmlogo.png" style={{width: '100%',height:'60px'}} />
+	</a>
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
