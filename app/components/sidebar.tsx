@@ -110,6 +110,23 @@ export function SideBar(props: { className?: string }) {
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
   const config = useAppConfig();
+  
+  let theme = config.theme
+
+  if (theme === 'auto') {
+	  /*判断是否处于深色模式*/
+	  if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+	      theme = 'dark'
+	  }
+
+	  /*判断是否处于浅色模式*/
+	  if(window.matchMedia('(prefers-color-scheme: light)').matches){
+	  	theme = 'light'
+	  }
+  }
+
+
+  const darkMode = theme == 'dark'
 
   useHotKey();
 
@@ -120,7 +137,7 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]}>
 	<a href="https://openai.mbmzone.com" target="_blank">
-        	<img src="/mbmlogo.png" style={{width: '100%',height:'60px'}} />
+        	<img src={darkMode ? "/mbmlogo-light.png" : "/mbmlogo-dark.png"} style={{width: '100%',height:'60px'}} />
 	</a>
       </div>
 
