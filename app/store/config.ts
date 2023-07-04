@@ -56,14 +56,17 @@ export const ALL_MODELS = [
     name: "gpt-4",
     available: ENABLE_GPT4,
   },
+  /*
   {
     name: "gpt-4-0314",
     available: ENABLE_GPT4,
   },
+ */
   {
     name: "gpt-4-32k",
     available: ENABLE_GPT4,
   },
+  /*
   {
     name: "gpt-4-32k-0314",
     available: ENABLE_GPT4,
@@ -76,10 +79,16 @@ export const ALL_MODELS = [
     name: "text-davinci-002-render-sha-mobile",
     available: true,
   },
+  */
   {
     name: "gpt-3.5-turbo",
     available: true,
   },
+  {
+    name: "gpt-3.5-turbo-16k",
+    available: true,
+  },
+  /*
   {
     name: "gpt-3.5-turbo-0301",
     available: true,
@@ -104,6 +113,7 @@ export const ALL_MODELS = [
     name: "chatglm", // chatglm-6b
     available: false,
   },
+  */
 ] as const;
 
 export type ModelType = (typeof ALL_MODELS)[number]["name"];
