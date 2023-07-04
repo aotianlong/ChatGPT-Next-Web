@@ -21,6 +21,7 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import TokensNotice from '../mbm/tokens-notice'
 
 import {
   ChatMessage,
@@ -832,6 +833,7 @@ export function Chat() {
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
+              {!isUser && <TokensNotice completionText={message.content} />}
             </>
           );
         })}
@@ -877,6 +879,7 @@ export function Chat() {
             onClick={() => doSubmit(userInput)}
           />
         </div>
+        <TokensNotice promptText={userInput} />
       </div>
 
       {showExport && (

@@ -14,6 +14,7 @@ import PluginIcon from "../icons/plugin.svg";
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
+import { RechargeButton } from "../mbm/recharge";
 
 import {
   MAX_SIDEBAR_WIDTH,
@@ -109,23 +110,35 @@ export function SideBar(props: { className?: string }) {
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
   const config = useAppConfig();
+  
+  let theme = config.theme
+
+  if (theme === 'auto') {
+	  /*判断是否处于深色模式*/
+	  if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+	      theme = 'dark'
+	  }
+
+	  /*判断是否处于浅色模式*/
+	  if(window.matchMedia('(prefers-color-scheme: light)').matches){
+	  	theme = 'light'
+	  }
+  }
+
+
+  const darkMode = theme == 'dark'
 
   useHotKey();
 
   return (
-    <div
-      className={`${styles.sidebar} ${props.className} ${
+    <div className={`${styles.sidebar} ${props.className} ${
         shouldNarrow && styles["narrow-sidebar"]
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT Next</div>
-        <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
-        </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
-        </div>
+	<a href="https://openai.mbmzone.com" target="_blank">
+        	<img src={darkMode ? "/mbmlogo-light.png" : "/mbmlogo-dark.png"} style={{width: '100%',height:'60px'}} />
+	</a>
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
@@ -174,8 +187,8 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank">
-              <IconButton icon={<GithubIcon />} shadow />
+            <a href="https://openai.mbmzone.com/mbm-gpt/recharge" target="_blank">
+              <IconButton text="充值我的账户"></IconButton>
             </a>
           </div>
         </div>
