@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey } from "../constant";
-
 export enum SubmitKey {
   Enter = "Enter",
   CtrlEnter = "Ctrl + Enter",

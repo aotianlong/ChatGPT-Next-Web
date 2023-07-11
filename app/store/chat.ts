@@ -232,7 +232,7 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
-      async onUserInput(content) {
+      async onUserInput(content, isCardMember = false) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -245,7 +245,7 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           streaming: true,
           id: userMessage.id! + 1,
-          model: modelConfig.model,
+          model: isCardMember ? 'gpt-3.5-turbo' : modelConfig.model,
         });
 
         const systemInfo = createMessage({

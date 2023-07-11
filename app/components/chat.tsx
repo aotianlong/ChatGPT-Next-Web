@@ -22,6 +22,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import TokensNotice from '../mbm/tokens-notice'
+import { computeIsCardMember } from "../mbm/card-member";
 
 import {
   ChatMessage,
@@ -62,6 +63,8 @@ import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
+
+const isCardMember = computeIsCardMember();
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -489,7 +492,7 @@ export function Chat() {
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    chatStore.onUserInput(userInput, isCardMember).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);
@@ -833,7 +836,7 @@ export function Chat() {
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
-              {!isUser && <TokensNotice completionText={message.content} />}
+              {!isUser && !isCardMember && <TokensNotice completionText={message.content} />}
             </>
           );
         })}
@@ -879,7 +882,7 @@ export function Chat() {
             onClick={() => doSubmit(userInput)}
           />
         </div>
-        <TokensNotice promptText={userInput} />
+        {!isCardMember && <TokensNotice promptText={userInput} />}
       </div>
 
       {showExport && (
