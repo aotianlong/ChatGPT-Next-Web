@@ -3,11 +3,13 @@ import { ALL_MODELS, ModalConfigValidator, ModelConfig } from "../store";
 import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { List, ListItem, Select } from "./ui-lib";
+import { isCardMember } from '@/app/mbm/card-member'
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
+  const iIsCardMember = isCardMember();
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
@@ -22,11 +24,16 @@ export function ModelConfigList(props: {
             );
           }}
         >
-          {ALL_MODELS.map((v) => (
+          {!iIsCardMember && ALL_MODELS.map((v) => (
             <option value={v.name} key={v.name} disabled={!v.available}>
               {v.name}
             </option>
           ))}
+	  {iIsCardMember &&
+            <option value="gpt-3.5-turbo">
+              GPT-周卡
+            </option>
+          }
         </Select>
       </ListItem>
       <ListItem

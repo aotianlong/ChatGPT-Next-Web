@@ -15,3 +15,8 @@ export function computeIsCardMember(callback: any = null) {
   }
   return JSON.parse(localStorage.getItem(modelNameKey) || 'false')
 }
+
+
+export function isCardMember() {
+  return JSON.parse(localStorage.getItem(modelNameKey) || 'false')
+}
