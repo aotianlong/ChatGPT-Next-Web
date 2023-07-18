@@ -22,7 +22,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import TokensNotice from '../mbm/tokens-notice'
-import { computeIsCardMember } from "../mbm/card-member";
+import { isCardMember } from "../mbm/card-member";
 
 import {
   ChatMessage,
@@ -63,8 +63,6 @@ import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
-
-const isCardMember = computeIsCardMember();
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -489,10 +487,12 @@ export function Chat() {
     }
   };
 
-  const doSubmit = (userInput: string) => {
+  const doSubmit = async (userInput: string) => {
     if (userInput.trim() === "") return;
     setIsLoading(true);
-    chatStore.onUserInput(userInput, isCardMember).then(() => setIsLoading(false));
+    const isMember = await isCardMember()
+    console.log('isMember', isMember)
+    chatStore.onUserInput(userInput, isMember).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);

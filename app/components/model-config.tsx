@@ -5,11 +5,11 @@ import { InputRange } from "./input-range";
 import { List, ListItem, Select } from "./ui-lib";
 import { isCardMember } from '@/app/mbm/card-member'
 
-export function ModelConfigList(props: {
+export async function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
-  const iIsCardMember = isCardMember();
+  const iIsCardMember = await isCardMember();
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
@@ -29,7 +29,7 @@ export function ModelConfigList(props: {
               {v.name}
             </option>
           ))}
-	  {iIsCardMember &&
+	        {iIsCardMember &&
             <option value="gpt-3.5-turbo">
               GPT-周卡
             </option>
