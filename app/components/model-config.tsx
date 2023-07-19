@@ -24,12 +24,12 @@ export async function ModelConfigList(props: {
             );
           }}
         >
-          {!iIsCardMember && ALL_MODELS.map((v) => (
+          {ALL_MODELS.map((v) => (
             <option value={v.name} key={v.name} disabled={!v.available}>
               {v.name}
             </option>
           ))}
-	        {iIsCardMember &&
+	  {iIsCardMember &&
             <option value="gpt-3.5-turbo">
               GPT-周卡
             </option>

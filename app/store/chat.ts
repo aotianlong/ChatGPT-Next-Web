@@ -245,7 +245,7 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           streaming: true,
           id: userMessage.id! + 1,
-          model: isCardMember ? 'gpt-3.5-turbo' : modelConfig.model,
+          model: modelConfig.model,
         });
 
         const systemInfo = createMessage({
