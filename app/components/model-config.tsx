@@ -24,16 +24,17 @@ export async function ModelConfigList(props: {
             );
           }}
         >
-          {ALL_MODELS.map((v) => (
-            <option value={v.name} key={v.name} disabled={!v.available}>
-              {v.name}
-            </option>
-          ))}
 	  {iIsCardMember &&
             <option value="gpt-3.5-turbo">
               GPT-周卡
             </option>
           }
+          {ALL_MODELS.map((v) => (
+            <option value={v.name} key={v.name} disabled={!v.available}>
+              {v.name}
+            </option>
+          ))}
+
         </Select>
       </ListItem>
       <ListItem
