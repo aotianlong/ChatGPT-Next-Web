@@ -16,6 +16,7 @@ import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 import { sslogin } from "../mbm/login";
 import { useAccessStore } from "../store";
+import { isCardMember } from '../mbm/card-member';
 
 import {
   HashRouter as Router,
@@ -145,11 +146,14 @@ export function Home() {
     isLoggedIn() {
       return accessStore.token;
     },
-    handleAccount(account: any) {
-      accessStore.token = account.accessKey;
-      config.modelConfig.model = 'gpt-4';
+    async handleAccount(account: any) {
+      accessStore.token = account.accessKey; //先设置accessKey
+      const isMember = await isCardMember()
+      const model = isMember ? 'gpt-3.5-turbo' : 'gpt-4'
+      console.log('isCardMember', isMember, model);
+      config.modelConfig.model = model;
       const modelConfig = {...config.modelConfig};
-      modelConfig.model = 'gpt-4'
+      modelConfig.model = model
       config.update((config) => (config.modelConfig = modelConfig));
     },
   });
