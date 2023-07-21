@@ -84,7 +84,7 @@ export const ALL_MODELS = [
     available: true,
   },
   {
-    name: "gpt-3.5-turbo-16k",
+    name: "gpt-35-turbo-16k",
     available: true,
   },
   /*
