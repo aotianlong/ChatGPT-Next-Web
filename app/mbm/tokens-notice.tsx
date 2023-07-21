@@ -16,7 +16,8 @@ const promptPrice = {
 export default function TokensNotice(props: {
   completionText?: string;
   promptText?: string;
-  showModel?: boolean
+  showModel?: boolean;
+  isCardMember?: boolean;
 }) {
   const state = useAppConfig.getState()
   const chatStore = useChatStore.getState();
@@ -32,6 +33,7 @@ export default function TokensNotice(props: {
   const completionTokens = encode(props.completionText || '').length;
   // 获取contents的最后historyMessageCount条消息
   const historyContents = contents.slice(-historyMessageCount)
+  const isCardMember = props.isCardMember;
 
   let promptText = props.promptText || ''
   if (sendMemory) {
@@ -40,6 +42,10 @@ export default function TokensNotice(props: {
   const promptTokens = encode(promptText).length;
   const totalCost = completionPrice[model] * completionTokens + promptPrice[model] * promptTokens;
 
+  // 周卡用户，并使用gpt-3.5，则不显示提示
+  if(isCardMember && model === 'gpt-3.5-turbo') {
+    return null;
+  }
 
   return (
     <div className="flex gap-2 text-gray-400 text-sm" style={{fontSize: '12px', color: '#777'}}>
