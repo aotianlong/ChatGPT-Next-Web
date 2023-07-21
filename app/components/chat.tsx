@@ -836,7 +836,7 @@ export function Chat() {
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
-              {!isUser && !isCardMember && <TokensNotice completionText={message.content} />}
+              {!isUser && <TokensNotice isCardMember={isCardMember} completionText={message.content} />}
             </>
           );
         })}
@@ -882,7 +882,7 @@ export function Chat() {
             onClick={() => doSubmit(userInput)}
           />
         </div>
-        {!isCardMember && <TokensNotice promptText={userInput} />}
+        {<TokensNotice promptText={userInput} isCardMember={isCardMember} />}
       </div>
 
       {showExport && (
