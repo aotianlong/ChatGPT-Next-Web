@@ -5,12 +5,14 @@ const completionPrice = {
 	'gpt-4': 0.12,
 	'gpt-4-32k': 0.24,
 	'gpt-3.5-turbo': 0.004,
+  'gpt-35-turbo-16k': 0.004,
 }
 
 const promptPrice = {
 	'gpt-4': 0.06,
 	'gpt-4-32k': 0.12,
 	'gpt-3.5-turbo': 0.004,
+  'gpt-35-turbo-16k': 0.004,
 }
 
 export default function TokensNotice(props: {
