@@ -1053,6 +1053,8 @@ function _Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -1263,7 +1265,6 @@ function _Chat() {
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
               {!isUser && <TokensNotice isCardMember={isCardMember} completionText={message.content} />}
-            </>
             </Fragment>
           );
         })}

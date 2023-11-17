@@ -8,7 +8,7 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
-  StoreKey,
+  // StoreKey,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
 

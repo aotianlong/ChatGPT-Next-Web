@@ -136,7 +136,6 @@ export function SideBar(props: { className?: string }) {
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
   const config = useAppConfig();
-<<<<<<< HEAD
   
   let theme = config.theme
 

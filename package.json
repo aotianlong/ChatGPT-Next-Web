@@ -61,6 +61,5 @@
     "webpack": "^5.88.1"
   },
   "resolutions": {
-    "lint-staged/yaml": "^2.2.2"
   }
 }
