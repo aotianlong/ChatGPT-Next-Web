@@ -43,3 +43,6 @@ dev
 .env
 *.swo
 *.swp
+
+*.key
+*.key.pub

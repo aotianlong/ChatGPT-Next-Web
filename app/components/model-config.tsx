@@ -1,15 +1,18 @@
-import { ALL_MODELS, ModalConfigValidator, ModelConfig } from "../store";
+import { ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { List, ListItem, Select } from "./ui-lib";
 import { isCardMember } from '@/app/mbm/card-member'
+import { useAllModels } from "../utils/hooks";
 
 export async function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const iIsCardMember = await isCardMember();
+  const allModels = useAllModels();
+
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
@@ -29,12 +32,13 @@ export async function ModelConfigList(props: {
               GPT-周卡
             </option>
           }
-          {ALL_MODELS.map((v) => (
-            <option value={v.name} key={v.name} disabled={!v.available}>
-              {v.name}
-            </option>
-          ))}
-
+          {allModels
+            .filter((v) => v.available)
+            .map((v, i) => (
+              <option value={v.name} key={i}>
+                {v.displayName}
+              </option>
+            ))}
         </Select>
       </ListItem>
       <ListItem
@@ -57,13 +61,32 @@ export async function ModelConfigList(props: {
         ></InputRange>
       </ListItem>
       <ListItem
+        title={Locale.Settings.TopP.Title}
+        subTitle={Locale.Settings.TopP.SubTitle}
+      >
+        <InputRange
+          value={(props.modelConfig.top_p ?? 1).toFixed(1)}
+          min="0"
+          max="1"
+          step="0.1"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.top_p = ModalConfigValidator.top_p(
+                  e.currentTarget.valueAsNumber,
+                )),
+            );
+          }}
+        ></InputRange>
+      </ListItem>
+      <ListItem
         title={Locale.Settings.MaxTokens.Title}
         subTitle={Locale.Settings.MaxTokens.SubTitle}
       >
         <input
           type="number"
-          min={100}
-          max={32000}
+          min={1024}
+          max={512000}
           value={props.modelConfig.max_tokens}
           onChange={(e) =>
             props.updateConfig(
@@ -97,6 +120,58 @@ export async function ModelConfigList(props: {
       </ListItem>
 
       <ListItem
+        title={Locale.Settings.FrequencyPenalty.Title}
+        subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
+      >
+        <InputRange
+          value={props.modelConfig.frequency_penalty?.toFixed(1)}
+          min="-2"
+          max="2"
+          step="0.1"
+          onChange={(e) => {
+            props.updateConfig(
+              (config) =>
+                (config.frequency_penalty =
+                  ModalConfigValidator.frequency_penalty(
+                    e.currentTarget.valueAsNumber,
+                  )),
+            );
+          }}
+        ></InputRange>
+      </ListItem>
+
+      <ListItem
+        title={Locale.Settings.InjectSystemPrompts.Title}
+        subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
+      >
+        <input
+          type="checkbox"
+          checked={props.modelConfig.enableInjectSystemPrompts}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) =>
+                (config.enableInjectSystemPrompts = e.currentTarget.checked),
+            )
+          }
+        ></input>
+      </ListItem>
+
+      <ListItem
+        title={Locale.Settings.InputTemplate.Title}
+        subTitle={Locale.Settings.InputTemplate.SubTitle}
+      >
+        <input
+          type="text"
+          value={props.modelConfig.template}
+          onChange={(e) =>
+            props.updateConfig(
+              (config) => (config.template = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+
+      <ListItem
         title={Locale.Settings.HistoryCount.Title}
         subTitle={Locale.Settings.HistoryCount.SubTitle}
       >
@@ -104,7 +179,7 @@ export async function ModelConfigList(props: {
           title={props.modelConfig.historyMessageCount.toString()}
           value={props.modelConfig.historyMessageCount}
           min="0"
-          max="32"
+          max="64"
           step="1"
           onChange={(e) =>
             props.updateConfig(
