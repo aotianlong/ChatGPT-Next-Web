@@ -198,6 +198,12 @@ export function Home() {
     },
     async handleAccount(account: any) {
       accessStore.token = account.accessKey; //先设置accessKey
+      accessStore.update((access) => {
+        access.useCustomConfig = true;
+        access.openaiApiKey = account.accessKey;
+        access.accessCode = account.accessKey;
+      });
+
       const isMember = await isCardMember()
       const model = isMember ? 'gpt-3.5-turbo' : 'gpt-4'
       console.log('isCardMember', isMember, model);
