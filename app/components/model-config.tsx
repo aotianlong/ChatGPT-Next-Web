@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
@@ -6,11 +7,18 @@ import { List, ListItem, Select } from "./ui-lib";
 import { isCardMember } from '@/app/mbm/card-member'
 import { useAllModels } from "../utils/hooks";
 
-export async function ModelConfigList(props: {
+export function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
-  const iIsCardMember = await isCardMember();
+  const [iIsCardMember, setIIsCardMember] = useState(true);
+
+  useEffect(() => {
+    isCardMember().then(res => {
+      setIIsCardMember(res);
+    });
+  });
+
   const allModels = useAllModels();
 
   return (
