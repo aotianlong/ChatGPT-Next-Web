@@ -5,14 +5,40 @@ const completionPrice = {
 	'gpt-4': 0.12,
 	'gpt-4-32k': 0.24,
 	'gpt-3.5-turbo': 0.004,
-  'gpt-35-turbo-16k': 0.004,
+  	'gpt-35-turbo-16k': 0.004,
+
+	'gpt-3.5-turbo-16k-0613': 0.004,
+	'gpt-3.5-turbo-0301': 0.004,
+	'gpt-3.5-turbo-0613': 0.004,
+	'gpt-3.5-turbo-1106': 0.004,
+	'gpt-3.5-turbo-16k': 0.004,
+	
+	'gpt-4-0314': 0.12,
+	'gpt-4-0613': 0.12,
+	'gpt-4-32k-0314': 0.24,
+	'gpt-4-32k-0613': 0.24,
+	'gpt-4-1106-preview': 0.24,
+	'gpt-4-vision-preview': 0.24,
 }
 
 const promptPrice = {
 	'gpt-4': 0.06,
 	'gpt-4-32k': 0.12,
 	'gpt-3.5-turbo': 0.004,
-  'gpt-35-turbo-16k': 0.004,
+  	'gpt-35-turbo-16k': 0.004,
+
+	'gpt-3.5-turbo-16k-0613': 0.004,
+	'gpt-3.5-turbo-0301': 0.004,
+	'gpt-3.5-turbo-0613': 0.004,
+	'gpt-3.5-turbo-1106': 0.004,
+	'gpt-3.5-turbo-16k': 0.004,
+
+	'gpt-4-0314': 0.06,
+	'gpt-4-0613': 0.06,
+	'gpt-4-32k-0314': 0.12,
+	'gpt-4-32k-0613': 0.12,
+	'gpt-4-1106-preview': 0.12,
+	'gpt-4-vision-preview': 0.12,
 }
 
 export default function TokensNotice(props: {
