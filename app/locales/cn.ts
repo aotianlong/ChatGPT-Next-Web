@@ -63,6 +63,8 @@ const cn = {
       Masks: "所有面具",
       Clear: "清除聊天",
       Settings: "对话设置",
+      OpenWebSearch: "开启联网",
+      CloseWebSearch: "关闭联网",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -127,6 +129,22 @@ const cn = {
   Settings: {
     Title: "设置",
     SubTitle: "所有设置选项",
+
+    Plugin: {
+      Enable: {
+        Title: "启用插件",
+        SubTitle: "启用插件调用功能",
+      },
+      MaxIteration: {
+        Title: "最大迭代数",
+        SubTitle: "插件调用最大迭代数",
+      },
+      ReturnIntermediateStep: {
+        Title: "返回中间步骤",
+        SubTitle: "是否返回插件调用的中间步骤",
+      },
+    },
+
 
     Danger: {
       Reset: {
@@ -369,6 +387,19 @@ const cn = {
   },
   Plugin: {
     Name: "插件",
+    Page: {
+      Title: "预设插件",
+      SubTitle: (count: number) => `${count} 个插件定义`,
+      Search: "搜索插件",
+      Create: "新建",
+    },
+    RuntimeWarning: "仅在非Vercel环境部署时可用",
+    EditModal: {
+      Title: (readonly: boolean) =>
+          `编辑预设面具 ${readonly ? "（只读）" : ""}`,
+      Download: "下载预设",
+      Clone: "克隆预设",
+    },
   },
   FineTuned: {
     Sysmessage: "你是一个助手",

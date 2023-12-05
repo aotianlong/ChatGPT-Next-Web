@@ -195,6 +195,7 @@ export function SideBar(props: { className?: string }) {
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
           className={styles["sidebar-bar-button"]}
           onClick={() => showToast(Locale.WIP)}
+          // onClick={() => navigate(Path.Plugins, { state: { fromHome: true } })}
           shadow
         />
       </div>

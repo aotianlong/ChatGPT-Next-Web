@@ -19,6 +19,8 @@ export enum Path {
   NewChat = "/new-chat",
   Masks = "/masks",
   Auth = "/auth",
+
+  Plugins = "/plugins",
 }
 
 export enum ApiPath {
@@ -34,6 +36,8 @@ export enum SlotID {
 export enum FileName {
   Masks = "masks.json",
   Prompts = "prompts.json",
+
+  Plugins = "plugins.json",
 }
 
 export enum StoreKey {
@@ -44,6 +48,8 @@ export enum StoreKey {
   Prompt = "prompt-store",
   Update = "chat-update",
   Sync = "sync",
+
+  Plugin = "plugin-store",
 }
 
 export const DEFAULT_SIDEBAR_WIDTH = 300;

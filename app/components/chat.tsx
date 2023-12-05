@@ -36,6 +36,9 @@ import StopIcon from "../icons/pause.svg";
 import TokensNotice from '../mbm/tokens-notice'
 import { isCardMember } from "../mbm/card-member";
 import RobotIcon from "../icons/robot.svg";
+import SearchCloseIcon from "../icons/search_close.svg";
+import SearchOpenIcon from "../icons/search_open.svg";
+import CheckmarkIcon from "../icons/checkmark.svg";
 
 import {
   ChatMessage,
@@ -417,6 +420,14 @@ export function ChatActions(props: {
   const navigate = useNavigate();
   const chatStore = useChatStore();
 
+  // switch web search
+  const webSearch = chatStore.currentSession().webSearch;
+  function switchWebSearch() {
+    chatStore.updateCurrentSession((session) => {
+      session.webSearch = !session.webSearch;
+    });
+  }
+
   // switch themes
   const theme = config.theme;
   function nextTheme() {
@@ -526,6 +537,17 @@ export function ChatActions(props: {
         onClick={() => setShowModelSelector(true)}
         text={currentModel}
         icon={<RobotIcon />}
+      />
+
+
+      <ChatAction
+          onClick={switchWebSearch}
+          text={
+            webSearch
+                ? Locale.Chat.InputActions.CloseWebSearch
+                : Locale.Chat.InputActions.OpenWebSearch
+          }
+          icon={webSearch ? <SearchOpenIcon /> : <SearchCloseIcon />}
       />
 
       {showModelSelector && (
@@ -1230,7 +1252,22 @@ function _Chat() {
                         </div>
                       </div>
                     )}
+
                   </div>
+
+                  {/*<div>*/}
+                  {/*  <div className={styles["chat-message-tools-status"]}>*/}
+                  {/*    <div className={styles["chat-message-tools-name"]}>*/}
+                  {/*      <CheckmarkIcon*/}
+                  {/*          className={styles["chat-message-checkmark"]}*/}
+                  {/*      />*/}
+                  {/*      web search:*/}
+                  {/*      <code className={styles["chat-message-tools-details"]}>*/}
+                  {/*        xxxxxxxxxxxxxxxx*/}
+                  {/*      </code>*/}
+                  {/*    </div>*/}
+                  {/*  </div>*/}
+                  {/*</div>*/}
                   {showTyping && (
                     <div className={styles["chat-message-status"]}>
                       {Locale.Chat.Typing}
@@ -1326,6 +1363,7 @@ function _Chat() {
           }}
         />
       )}
+
     </div>
   );
 }

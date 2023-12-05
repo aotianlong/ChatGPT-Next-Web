@@ -21,6 +21,7 @@
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "emoji-picker-react": "^4.5.15",
+    "duck-duck-scrape": "^2.2.4",
     "fuse.js": "^6.6.2",
     "gpt-tokenizer": "^2.1.1",
     "html-to-image": "^1.11.11",
