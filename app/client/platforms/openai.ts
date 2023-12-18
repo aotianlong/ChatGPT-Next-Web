@@ -24,9 +24,6 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
-import {CN_PLUGINS} from "@/app/plugins/cn";
-import {EN_PLUGINS} from "@/app/plugins/en";
-import {BUILTIN_PLUGIN_STORE} from "@/app/plugins";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -36,7 +33,6 @@ export interface OpenAIListModelResponse {
     root: string;
   }>;
 }
-
 
 export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
@@ -48,7 +44,7 @@ export class ChatGPTApi implements LLMApi {
 
     if (isAzure && !accessStore.isValidAzure()) {
       throw Error(
-        "incomplete azure config, please check it in your settings page",
+          "incomplete azure config, please check it in your settings page",
       );
     }
 
@@ -78,7 +74,8 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => {
+    const messages: any[] = [];
+    for (const v of options.messages) {
       let message: {
         role: string;
         content: { type: string; text?: string; image_url?: { url: string } }[];
@@ -91,15 +88,25 @@ export class ChatGPTApi implements LLMApi {
         text: v.content,
       });
       if (v.image_url) {
-        message.content.push({
-          type: "image_url",
-          image_url: {
-            url: v.image_url,
-          },
-        });
+        await fetch(v.image_url)
+            .then((response) => response.arrayBuffer())
+            .then((buffer) => {
+              const base64Data = btoa(
+                  String.fromCharCode(...new Uint8Array(buffer)),
+              );
+              message.content.push({
+                type: "image_url",
+                image_url: {
+                  url: `data:image/jpeg;base64,${base64Data}`,
+                },
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
       }
-      return message;
-    });
+      messages.push(message);
+    }
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -108,7 +115,6 @@ export class ChatGPTApi implements LLMApi {
         model: options.config.model,
       },
     };
-
     const requestPayload = {
       messages,
       stream: options.config.stream,
@@ -142,8 +148,8 @@ export class ChatGPTApi implements LLMApi {
 
       // make a fetch request
       const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+          () => controller.abort(),
+          REQUEST_TIMEOUT_MS,
       );
 
       if (shouldStream) {
@@ -181,15 +187,14 @@ export class ChatGPTApi implements LLMApi {
         };
 
         controller.signal.onabort = finish;
-
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
             console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
+                "[OpenAI] request response content type: ",
+                contentType,
             );
 
             if (contentType?.startsWith("text/plain")) {
@@ -198,11 +203,11 @@ export class ChatGPTApi implements LLMApi {
             }
 
             if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
+                !res.ok ||
+                !res.headers
+                    .get("content-type")
+                    ?.startsWith(EventStreamContentType) ||
+                res.status !== 200
             ) {
               const responseTexts = [responseText];
               let extraInfo = await res.clone().text();
@@ -243,7 +248,6 @@ export class ChatGPTApi implements LLMApi {
               }
             } catch (e) {
               console.error("[Request] parse error", text);
-              throw e;
             }
           },
           onclose() {
@@ -269,7 +273,6 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
-
   async toolAgentChat(options: AgentChatOptions) {
     const messages = options.messages.map((v) => ({
       role: v.role,
@@ -292,9 +295,9 @@ export class ChatGPTApi implements LLMApi {
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
+      baseUrl: useAccessStore.getState().openaiUrl,
       maxIterations: options.agentConfig.maxIterations,
       returnIntermediateSteps: options.agentConfig.returnIntermediateSteps,
-      baseUrl: useAccessStore.getState().openaiUrl,
       useTools: options.agentConfig.useTools,
     };
 
@@ -379,7 +382,6 @@ export class ChatGPTApi implements LLMApi {
             }
           },
           onmessage(msg) {
-
             let response = JSON.parse(msg.data);
             if (!response.isSuccess) {
               console.error("[Request]", msg.data);
@@ -440,13 +442,12 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
-
   async usage() {
     const formatDate = (d: Date) =>
-      `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
-        .getDate()
-        .toString()
-        .padStart(2, "0")}`;
+        `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
+            .getDate()
+            .toString()
+            .padStart(2, "0")}`;
     const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -455,13 +456,13 @@ export class ChatGPTApi implements LLMApi {
 
     const [used, subs] = await Promise.all([
       fetch(
-        this.path(
-          `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
-        ),
-        {
-          method: "GET",
-          headers: getHeaders(),
-        },
+          this.path(
+              `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
+          ),
+          {
+            method: "GET",
+            headers: getHeaders(),
+          },
       ),
       fetch(this.path(OpenaiPath.SubsPath), {
         method: "GET",

@@ -76,7 +76,9 @@ export class DallEAPIWrapper extends StructuredTool {
       // let filePath = await this.saveImageFromUrl(image_url);
       // console.log("[DALL-E]", filePath);
       var imageMarkdown = `![img](${image_url})`;
-      if (this.callback != null) await this.callback(revised_prompt+'\n'+imageMarkdown);
+      if (this.callback != null) await this.callback(
+          // revised_prompt+'\n'+
+          imageMarkdown);
       return imageMarkdown;
       // return image_url
     } catch (e) {
