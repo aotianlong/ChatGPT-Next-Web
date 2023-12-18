@@ -65,8 +65,8 @@ const en: LocaleType = {
       Masks: "Masks",
       Clear: "Clear Context",
       Settings: "Settings",
-      OpenWebSearch: "Enable Web Search",
-      CloseWebSearch: "Disable Web Search",
+      OpenTools: "开启插件",
+      CloseTools: "关闭插件",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -377,6 +377,19 @@ const en: LocaleType = {
   },
   Plugin: {
     Name: "Plugin",
+    Page: {
+      Title: "Plugin Template",
+      SubTitle: (count: number) => `${count} plugin templates`,
+      Search: "Search Templates",
+      Create: "Create",
+    },
+    RuntimeWarning: "仅在非Vercel环境部署时可用",
+    EditModal: {
+      Title: (readonly: boolean) =>
+          `Edit Plugin Template ${readonly ? "(readonly)" : ""}`,
+      Download: "Download",
+      Clone: "Clone",
+    },
   },
   FineTuned: {
     Sysmessage: "You are an assistant that",

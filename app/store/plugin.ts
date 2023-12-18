@@ -17,6 +17,7 @@ export type Plugin = {
   builtin: boolean;
   enable: boolean;
   onlyNodeRuntime: boolean;
+    billing: string;
 };
 
 export const DEFAULT_PLUGIN_STATE = {
@@ -44,7 +45,7 @@ export const createEmptyPlugin = () =>
     builtin: false,
     createdAt: Date.now(),
     enable: true,
-  }) as Plugin;
+  } as Plugin);
 
 export const usePluginStore = create<PluginStore>()(
   persist(
@@ -100,7 +101,7 @@ export const usePluginStore = create<PluginStore>()(
           (m) =>
             ({
               ...m,
-            }) as Plugin,
+            } as Plugin),
         );
         const pluginStatuses = get().pluginStatuses;
         return userPlugins.concat(buildinPlugins).map((e) => {

@@ -19,6 +19,10 @@ export const BUILTIN_PLUGIN_STORE = {
     this.plugins[plugin.id] = plugin;
     return plugin;
   },
+  getToolName(toolName?: string) {
+    if (!toolName) return undefined;
+    return this.plugins[toolName] as Plugin | undefined;
+  },
 };
 
 export const BUILTIN_PLUGINS: BuiltinPlugin[] = [

@@ -64,7 +64,7 @@ export const DEFAULT_CONFIG = {
 
   pluginConfig: {
     enable: true,
-    maxIterations: 10,
+    maxIterations: 6,
     returnIntermediateSteps: true,
   },
 };
@@ -111,6 +111,10 @@ export const ALL_MODELS = [
   },
   {
     name: "gpt-35-turbo-16k",
+    available: true,
+  },
+  {
+    name: "gpt-4-vision-preview",
     available: true,
   },
   /*

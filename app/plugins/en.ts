@@ -10,6 +10,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1693744292000,
     enable: true,
     onlyNodeRuntime: false,
+    billing:'Free, but the question token is slightly increased'
   },
   {
     name: "Calculator",
@@ -21,6 +22,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1693744292000,
     enable: true,
     onlyNodeRuntime: false,
+    billing:'Free'
   },
   {
     name: "WebBrowser",
@@ -32,6 +34,7 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1693744292000,
     enable: true,
     onlyNodeRuntime: false,
+    billing:'Free, but the question token is slightly increased'
   },
   {
     name: "Wikipedia",
@@ -43,48 +46,50 @@ export const EN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1694235989000,
     enable: false,
     onlyNodeRuntime: false,
+    billing:'Free, but the question token is slightly increased'
   },
   {
     name: "DALL·E",
     toolName: "dalle_image_generator",
     lang: "en",
     description:
-      "DALL·E 2 is an AI system that can create realistic images and art from a description in natural language. Using this plugin requires configuring Cloudflare R2 object storage service.",
+      "DALL·E 3 is an AI system that can create realistic images and art from a description in natural language. ",
     builtin: true,
     createdAt: 1694703673000,
     enable: false,
     onlyNodeRuntime: false,
+    billing:'1000Token/piece'
   },
-  {
-    name: "Stable Diffusion",
-    toolName: "stable_diffusion_image_generator",
-    lang: "en",
-    description:
-      "Stable Diffusion text-to-image model. Using this plugin requires configuring Cloudflare R2 object storage service and stable-diffusion-webui API.",
-    builtin: true,
-    createdAt: 1688899480510,
-    enable: false,
-    onlyNodeRuntime: false,
-  },
-  {
-    name: "Arxiv",
-    toolName: "arxiv",
-    lang: "en",
-    description: "Arxiv search and get the article information.",
-    builtin: true,
-    createdAt: 1699265115000,
-    enable: false,
-    onlyNodeRuntime: false,
-  },
-  {
-    name: "PDFBrowser",
-    toolName: "pdf-browser",
-    lang: "en",
-    description:
-      "A class designed to interact with pdf file, extract information from the URL of a PDF file or summarize its content.",
-    builtin: true,
-    createdAt: 1700907315000,
-    enable: false,
-    onlyNodeRuntime: true,
-  },
+  // {
+  //   name: "Stable Diffusion",
+  //   toolName: "stable_diffusion_image_generator",
+  //   lang: "en",
+  //   description:
+  //     "Stable Diffusion text-to-image model. Using this plugin requires configuring Cloudflare R2 object storage service and stable-diffusion-webui API.",
+  //   builtin: true,
+  //   createdAt: 1688899480510,
+  //   enable: false,
+  //   onlyNodeRuntime: false,
+  // },
+  // {
+  //   name: "Arxiv",
+  //   toolName: "arxiv",
+  //   lang: "en",
+  //   description: "Arxiv search and get the article information.",
+  //   builtin: true,
+  //   createdAt: 1699265115000,
+  //   enable: false,
+  //   onlyNodeRuntime: false,
+  // },
+  // {
+  //   name: "PDFBrowser",
+  //   toolName: "pdf-browser",
+  //   lang: "en",
+  //   description:
+  //     "A class designed to interact with pdf file, extract information from the URL of a PDF file or summarize its content.",
+  //   builtin: true,
+  //   createdAt: 1700907315000,
+  //   enable: false,
+  //   onlyNodeRuntime: true,
+  // },
 ];

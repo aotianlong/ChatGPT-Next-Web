@@ -53,6 +53,9 @@ function ContextPromptItem(props: {
 }) {
   const [focusingInput, setFocusingInput] = useState(false);
 
+  const enableNodeJSPlugin = !!process.env.NEXT_PUBLIC_ENABLE_NODEJS_PLUGIN;
+
+
   return (
     <div className={chatStyle["context-prompt-row"]}>
       {!focusingInput && (
@@ -268,6 +271,10 @@ export function PluginPage() {
                     {/* 描述 */}
                     <div className={styles["plugin-info"] + " one-line"}>
                       {`${m.description}`}
+                    </div>
+                    <div className={styles["plugin-name"]}>计费: </div>
+                    <div   className={styles["plugin-info"] + " one-line"}>
+                      {`${m.billing}`}
                     </div>
                   </div>
                 </div>

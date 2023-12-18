@@ -14,7 +14,8 @@ export interface RequestMessage {
   role: MessageRole;
   content: string;
 
-  toolPrompt?: string;
+  image_url?: string;
+
 }
 
 export interface LLMConfig {
@@ -26,6 +27,24 @@ export interface LLMConfig {
   frequency_penalty?: number;
 }
 
+export interface LLMAgentConfig {
+  maxIterations: number;
+  returnIntermediateSteps: boolean;
+
+  useTools?: (string | undefined)[];
+}
+
+export interface AgentChatOptions {
+  messages: RequestMessage[];
+  config: LLMConfig;
+  agentConfig: LLMAgentConfig;
+  onToolUpdate?: (toolName: string, toolInput: string) => void;
+  onUpdate?: (message: string, chunk: string) => void;
+  onFinish: (message: string) => void;
+  onError?: (err: Error) => void;
+  onController?: (controller: AbortController) => void;
+}
+
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
@@ -34,6 +53,9 @@ export interface ChatOptions {
   onFinish: (message: string) => void;
   onError?: (err: Error) => void;
   onController?: (controller: AbortController) => void;
+
+  onToolUpdate?: (toolName: string, toolInput: string) => void;
+
 }
 
 export interface LLMUsage {
@@ -50,6 +72,9 @@ export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
+
+  abstract toolAgentChat(options: AgentChatOptions): Promise<void>;
+
 }
 
 type ProviderName = "openai" | "azure" | "claude" | "palm";
@@ -82,11 +107,9 @@ export abstract class ToolApi {
 export class ClientApi {
   public llm: LLMApi;
 
-  public searchTool: ToolApi;
 
   constructor() {
     this.llm = new ChatGPTApi();
-    this.searchTool = new DuckDuckGoSearch();
   }
 
   config() {}

@@ -36,9 +36,14 @@ import StopIcon from "../icons/pause.svg";
 import TokensNotice from '../mbm/tokens-notice'
 import { isCardMember } from "../mbm/card-member";
 import RobotIcon from "../icons/robot.svg";
+import CheckmarkIcon from "../icons/checkmark.svg";
+
 import SearchCloseIcon from "../icons/search_close.svg";
 import SearchOpenIcon from "../icons/search_open.svg";
-import CheckmarkIcon from "../icons/checkmark.svg";
+import EnablePluginIcon from "../icons/plugin_enable.svg";
+import DisablePluginIcon from "../icons/plugin_disable.svg";
+
+import UploadIcon from "../icons/upload.svg";
 
 import {
   ChatMessage,
@@ -85,6 +90,7 @@ import {
   Path,
   REQUEST_TIMEOUT_MS,
   UNFINISHED_INPUT,
+  LAST_INPUT_IMAGE_KEY,
 } from "../constant";
 import { Avatar } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
@@ -94,6 +100,8 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
+
+import Image from "next/image";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -333,8 +341,10 @@ function ClearContextDivider() {
 
 function ChatAction(props: {
   text: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
+  innerNode?: JSX.Element;
   onClick: () => void;
+  style?: React.CSSProperties;
 }) {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -355,28 +365,34 @@ function ChatAction(props: {
   }
 
   return (
-    <div
-      className={`${styles["chat-input-action"]} clickable`}
-      onClick={() => {
-        props.onClick();
-        setTimeout(updateWidth, 1);
-      }}
-      onMouseEnter={updateWidth}
-      onTouchStart={updateWidth}
-      style={
-        {
-          "--icon-width": `${width.icon}px`,
-          "--full-width": `${width.full}px`,
-        } as React.CSSProperties
-      }
-    >
-      <div ref={iconRef} className={styles["icon"]}>
-        {props.icon}
+      <div
+          className={`${styles["chat-input-action"]} clickable`}
+          onClick={() => {
+            props.onClick();
+            iconRef ? setTimeout(updateWidth, 1) : undefined;
+          }}
+          onMouseEnter={props.icon ? updateWidth : undefined}
+          onTouchStart={props.icon ? updateWidth : undefined}
+          style={
+            props.icon
+                ? ({
+                  "--icon-width": `${width.icon}px`,
+                  "--full-width": `${width.full}px`,
+                  ...props.style,
+                } as React.CSSProperties)
+                : props.style
+          }
+      >
+        {props.icon ? (
+            <div ref={iconRef} className={styles["icon"]}>
+              {props.icon}
+            </div>
+        ) : null}
+        <div className={props.icon ? styles["text"] : undefined} ref={textRef}>
+          {props.text}
+        </div>
+        {props.innerNode}
       </div>
-      <div className={styles["text"]} ref={textRef}>
-        {props.text}
-      </div>
-    </div>
   );
 }
 
@@ -415,16 +431,18 @@ export function ChatActions(props: {
   scrollToBottom: () => void;
   showPromptHints: () => void;
   hitBottom: boolean;
+
+  imageSelected: (img: any) => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
   const chatStore = useChatStore();
 
-  // switch web search
-  const webSearch = chatStore.currentSession().webSearch;
-  function switchWebSearch() {
+  // switch Plugins
+  const usePlugins = chatStore.currentSession().mask.usePlugins;
+  function switchUsePlugins() {
     chatStore.updateCurrentSession((session) => {
-      session.webSearch = !session.webSearch;
+      session.mask.usePlugins = !session.mask.usePlugins;
     });
   }
 
@@ -441,6 +459,25 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ChatControllerPool.hasPending();
   const stopAll = () => ChatControllerPool.stopAll();
+
+  function selectImage() {
+    document.getElementById("chat-image-file-select-upload")?.click();
+  }
+
+  const onImageSelected = (e: any) => {
+    const file = e.target.files[0];
+    const filename = file.name;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64 = reader.result;
+      props.imageSelected({
+        filename,
+        base64,
+      });
+    };
+    e.target.value = null;
+  };
 
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
@@ -466,6 +503,7 @@ export function ChatActions(props: {
 
   return (
     <div className={styles["chat-input-actions"]}>
+      <div>
       {couldStop && (
         <ChatAction
           onClick={stopAll}
@@ -539,16 +577,36 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
+        {/*{currentModel == "gpt-4-vision-preview" && (*/}
+        {/*    <ChatAction*/}
+        {/*        onClick={selectImage}*/}
+        {/*        text="选择图片"*/}
+        {/*        icon={<UploadIcon />}*/}
+        {/*        innerNode={*/}
+        {/*          <input*/}
+        {/*              type="file"*/}
+        {/*              accept=".png,.jpg,.webp,.jpeg"*/}
+        {/*              id="chat-image-file-select-upload"*/}
+        {/*              style={{ display: "none" }}*/}
+        {/*              onChange={onImageSelected}*/}
+        {/*          />*/}
+        {/*        }*/}
+        {/*    />*/}
+        {/*)}*/}
 
-      <ChatAction
-          onClick={switchWebSearch}
-          text={
-            webSearch
-                ? Locale.Chat.InputActions.CloseWebSearch
-                : Locale.Chat.InputActions.OpenWebSearch
-          }
-          icon={webSearch ? <SearchOpenIcon /> : <SearchCloseIcon />}
-      />
+        {config.pluginConfig.enable &&
+            currentModel != "gpt-4-vision-preview" && (
+
+            <ChatAction
+            onClick={switchUsePlugins}
+            text={
+              usePlugins
+                  ? Locale.Chat.InputActions.OpenTools
+                  : Locale.Chat.InputActions.CloseTools
+            }
+            icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
+        />
+        )}
 
       {showModelSelector && (
         <Selector
@@ -563,11 +621,31 @@ export function ChatActions(props: {
             chatStore.updateCurrentSession((session) => {
               session.mask.modelConfig.model = s[0] as ModelType;
               session.mask.syncGlobalConfig = false;
+              session.mask.usePlugins =
+                  session.mask.modelConfig.model.endsWith("gpt-3.5-turbo");
             });
             showToast(s[0]);
           }}
         />
       )}
+      </div>
+
+      <div>
+        <ChatAction
+            text={Locale.Chat.InputActions.Clear}
+            icon={<BreakIcon />}
+            onClick={() => {
+              chatStore.updateCurrentSession((session) => {
+                if (session.clearContextIndex === session.messages.length) {
+                  session.clearContextIndex = undefined;
+                } else {
+                  session.clearContextIndex = session.messages.length;
+                  session.memoryPrompt = ""; // will clear memory
+                }
+              });
+            }}
+        />
+      </div>
     </div>
   );
 }
@@ -653,6 +731,8 @@ function _Chat() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
+  const [userImage, setUserImage] = useState<any>();
+
   // prompt hints
   const promptStore = usePromptStore();
   const [promptHints, setPromptHints] = useState<RenderPompt[]>([]);
@@ -719,7 +799,8 @@ function _Chat() {
     }
   };
 
-  const doSubmit = async (userInput: string) => {
+
+  const doSubmit = async (userInput: string, userImage?: any) => {
     if (userInput.trim() === "") return;
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
@@ -731,10 +812,14 @@ function _Chat() {
     setIsLoading(true);
     const isMember = await isCardMember()
     console.log('isMember', isMember)
-    chatStore.onUserInput(userInput, isMember).then(() => setIsLoading(false));
+    chatStore
+        .onUserInput(userInput, userImage?.base64)
+        .then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
+    localStorage.setItem(LAST_INPUT_IMAGE_KEY, userImage);
     setUserInput("");
     setPromptHints([]);
+    setUserImage(null);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
   };
@@ -798,6 +883,7 @@ function _Chat() {
       userInput.length <= 0 &&
       !(e.metaKey || e.altKey || e.ctrlKey)
     ) {
+      setUserImage(localStorage.getItem(LAST_INPUT_IMAGE_KEY));
       setUserInput(localStorage.getItem(LAST_INPUT_KEY) ?? "");
       e.preventDefault();
       return;
@@ -936,6 +1022,7 @@ function _Chat() {
                 ...createMessage({
                   role: "user",
                   content: userInput,
+                  image_url: userImage?.base64,
                 }),
                 preview: true,
               },
@@ -948,6 +1035,7 @@ function _Chat() {
     isLoading,
     session.messages,
     userInput,
+    userImage?.base64,
   ]);
 
   const [msgRenderIndex, _setMsgRenderIndex] = useState(
@@ -1075,7 +1163,7 @@ function _Chat() {
   }, []);
 
 
-
+  const textareaMinHeight = userImage ? 121 : 68;
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -1255,19 +1343,29 @@ function _Chat() {
 
                   </div>
 
-                  {/*<div>*/}
-                  {/*  <div className={styles["chat-message-tools-status"]}>*/}
-                  {/*    <div className={styles["chat-message-tools-name"]}>*/}
-                  {/*      <CheckmarkIcon*/}
-                  {/*          className={styles["chat-message-checkmark"]}*/}
-                  {/*      />*/}
-                  {/*      web search:*/}
-                  {/*      <code className={styles["chat-message-tools-details"]}>*/}
-                  {/*        xxxxxxxxxxxxxxxx*/}
-                  {/*      </code>*/}
-                  {/*    </div>*/}
-                  {/*  </div>*/}
-                  {/*</div>*/}
+                  {!isUser &&
+                      message.toolMessages &&
+                      message.toolMessages.map((tool, index) => (
+                          <div
+                              className={styles["chat-message-tools-status"]}
+                              key={index}
+                          >
+                            <div className={styles["chat-message-tools-name"]}>
+                              <CheckmarkIcon
+                                  className={styles["chat-message-checkmark"]}
+                              />
+                              {tool.toolName}:
+                              <code
+                                  className={styles["chat-message-tools-details"]}
+                              >
+                                {tool.toolInput}
+                              </code>
+                            </div>
+                          </div>
+                      ))}
+
+
+
                   {showTyping && (
                     <div className={styles["chat-message-status"]}>
                       {Locale.Chat.Typing}
@@ -1275,7 +1373,9 @@ function _Chat() {
                   )}
                   <div className={styles["chat-message-item"]}>
                     <Markdown
-                      content={message.content}
+                        // imageBase64={isUser && userImage && userImage.base64}
+                        imageBase64={message.image_url}
+                        content={message.content}
                       loading={
                         (message.preview || message.streaming) &&
                         message.content.length === 0 &&
@@ -1291,6 +1391,20 @@ function _Chat() {
                       defaultShow={i >= messages.length - 6}
                     />
                   </div>
+
+                  {/*{!isUser && message.model == "gpt-4-vision-preview" && (*/}
+                  {/*    <div*/}
+                  {/*        className={[*/}
+                  {/*          styles["chat-message-actions"],*/}
+                  {/*          styles["column-flex"],*/}
+                  {/*        ].join(" ")}*/}
+                  {/*    >*/}
+                  {/*      <div*/}
+                  {/*          style={{ marginTop: "6px" }}*/}
+                  {/*          className={styles["chat-input-actions"]}*/}
+                  {/*      ></div>*/}
+                  {/*    </div>*/}
+                  {/*)}*/}
 
                   <div className={styles["chat-message-action-date"]}>
                     {isContext
@@ -1324,6 +1438,9 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          imageSelected={(img: any) => {
+            setUserImage(img);
+          }}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
@@ -1339,14 +1456,41 @@ function _Chat() {
             autoFocus={autoFocus}
             style={{
               fontSize: config.fontSize,
+              minHeight: textareaMinHeight,
             }}
           />
+
+          {userImage && (
+              <div className={styles["chat-input-image"]}>
+                <div
+                    style={{ position: "relative", width: "48px", height: "48px" }}
+                >
+                  <Image
+                      src={userImage.base64}
+                      alt={userImage.filename}
+                      title={userImage.filename}
+                      layout="fill"
+                      objectFit="cover"
+                      objectPosition="center"
+                  />
+                </div>
+                <button
+                    className={styles["chat-input-image-close"]}
+                    onClick={() => {
+                      setUserImage(null);
+                    }}
+                >
+                  X
+                </button>
+              </div>
+          )}
+
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
             className={styles["chat-input-send"]}
             type="primary"
-            onClick={() => doSubmit(userInput)}
+            onClick={() => doSubmit(userInput, userImage)}
           />
         </div>
         {<TokensNotice promptText={userInput} isCardMember={isCardMember} />}

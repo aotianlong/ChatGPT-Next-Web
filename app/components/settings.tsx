@@ -18,6 +18,7 @@ import ConfirmIcon from "../icons/confirm.svg";
 import ConnectionIcon from "../icons/connection.svg";
 import CloudSuccessIcon from "../icons/cloud-success.svg";
 import CloudFailIcon from "../icons/cloud-fail.svg";
+import { PluginConfigList } from "./plugin-config";
 
 import {
   Input,
@@ -1119,6 +1120,17 @@ export function Settings() {
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
+
+        <List>
+          <PluginConfigList
+              pluginConfig={config.pluginConfig}
+              updateConfig={(updater) => {
+                const pluginConfig = { ...config.pluginConfig };
+                updater(pluginConfig);
+                config.update((config) => (config.pluginConfig = pluginConfig));
+              }}
+          />
+        </List>
 
         <DangerItems />
       </div>
