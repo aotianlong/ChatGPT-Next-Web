@@ -24,6 +24,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
+import {CN_PLUGINS} from "@/app/plugins/cn";
 
 export interface OpenAIListModelResponse {
   object: string;
