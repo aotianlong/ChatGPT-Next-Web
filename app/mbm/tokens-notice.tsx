@@ -5,14 +5,14 @@ const completionPrice = {
 	'gpt-4': 0.12,
 	'gpt-4-32k': 0.24,
 	'gpt-3.5-turbo': 0.004,
-  	'gpt-35-turbo-16k': 0.004,
+	'gpt-35-turbo-16k': 0.004,
 
 	'gpt-3.5-turbo-16k-0613': 0.004,
 	'gpt-3.5-turbo-0301': 0.004,
 	'gpt-3.5-turbo-0613': 0.004,
 	'gpt-3.5-turbo-1106': 0.004,
 	'gpt-3.5-turbo-16k': 0.004,
-	
+
 	'gpt-4-0314': 0.12,
 	'gpt-4-0613': 0.12,
 	'gpt-4-32k-0314': 0.24,
@@ -25,7 +25,7 @@ const promptPrice = {
 	'gpt-4': 0.06,
 	'gpt-4-32k': 0.12,
 	'gpt-3.5-turbo': 0.004,
-  	'gpt-35-turbo-16k': 0.004,
+	'gpt-35-turbo-16k': 0.004,
 
 	'gpt-3.5-turbo-16k-0613': 0.004,
 	'gpt-3.5-turbo-0301': 0.004,
@@ -42,58 +42,58 @@ const promptPrice = {
 }
 
 export default function TokensNotice(props: {
-  completionText?: string;
-  promptText?: string;
-  showModel?: boolean;
-  isCardMember?: boolean;
+	completionText?: string;
+	promptText?: string;
+	showModel?: boolean;
+	isCardMember?: boolean;
 }) {
-  const state = useAppConfig.getState()
-  const chatStore = useChatStore.getState();
-  const currentSession = chatStore.currentSession()
+	const state = useAppConfig.getState()
+	const chatStore = useChatStore.getState();
+	const currentSession = chatStore.currentSession()
 
-  const contents = currentSession.messages.map((message) => {
-    return message.content
-  })
+	const contents = currentSession.messages.map((message) => {
+		return message.content
+	})
 
-  const model = state.modelConfig.model;
-  const sendMemory = state.modelConfig.sendMemory;
-  const historyMessageCount = state.modelConfig.historyMessageCount;
-  const completionTokens = encode(props.completionText || '').length;
-  // 获取contents的最后historyMessageCount条消息
-  const historyContents = contents.slice(-historyMessageCount)
-  const isCardMember = props.isCardMember;
+	const model = state.modelConfig.model;
+	const sendMemory = state.modelConfig.sendMemory;
+	const historyMessageCount = state.modelConfig.historyMessageCount;
+	const completionTokens = encode(props.completionText || '').length;
+	// 获取contents的最后historyMessageCount条消息
+	const historyContents = contents.slice(-historyMessageCount)
+	const isCardMember = props.isCardMember;
 
-  let promptText = props.promptText || ''
-  if (sendMemory) {
-    promptText = historyContents.join('') + promptText
-  }
-  const promptTokens = encode(promptText).length;
-  const totalCost = completionPrice[model] * completionTokens + promptPrice[model] * promptTokens;
+	let promptText = props.promptText || ''
+	if (sendMemory) {
+		promptText = historyContents.join('') + promptText
+	}
+	const promptTokens = encode(promptText).length;
+	const totalCost = completionPrice[model] * completionTokens + promptPrice[model] * promptTokens;
 
-  // 周卡用户，并使用gpt-3.5，则不显示提示
-  if(isCardMember && model === 'gpt-3.5-turbo') {
-    return null;
-  }
+	// 周卡用户，并使用gpt-3.5，则不显示提示
+	if(isCardMember && model === 'gpt-3.5-turbo') {
+		return null;
+	}
 
-  return (
-    <div className="flex gap-2 text-gray-400 text-sm" style={{fontSize: '12px', color: '#777'}}>
-      {
-        completionTokens ? (<span>
+	return (
+		<div className="flex gap-2 text-gray-400 text-sm" style={{fontSize: '12px', color: '#777'}}>
+			{
+				completionTokens ? (<span>
           Completion 完成: { completionTokens } tokens;
         </span>) : ''
-      }
-      {
-        promptTokens ? (<span>
+			}
+			{
+				promptTokens ? (<span>
           Prompt 提示: { promptTokens } tokens;
         </span>
-        ) : ''
-      }
-      {
-        props.showModel && (<span>模型: { model };</span>)
-      }
-      <span>预计消耗 { (totalCost / 1000).toFixed(6) } 美金;</span>
-    </div>
-  )
+				) : ''
+			}
+			{
+				props.showModel && (<span>模型: { model };</span>)
+			}
+			<span>预计消耗 { (totalCost / 1000).toFixed(6) } 美金;</span>
+		</div>
+	)
 }
 
 
