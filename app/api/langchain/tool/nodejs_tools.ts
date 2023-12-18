@@ -1,5 +1,5 @@
 import { BaseLanguageModel } from "langchain/dist/base_language";
-import { PDFBrowser } from "@/app/api/langchain-tools/pdf_browser";
+import { PDFBrowser } from "@/app/api/langchain/tool/pdf_browser";
 
 import { Embeddings } from "langchain/dist/embeddings/base.js";
 
