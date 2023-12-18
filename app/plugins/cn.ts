@@ -10,7 +10,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1693744292000,
     enable: true,
     onlyNodeRuntime: false,
-    billing:'免 费，但问题token略有增加'
+    billing:'免 费，但问答token略有增加'
   },
   {
     name: "计算器",
@@ -33,7 +33,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1693744292000,
     enable: true,
     onlyNodeRuntime: false,
-    billing:'免 费，但问题token略有增加'
+    billing:'免 费，但问答token略有增加'
   },
   {
     name: "维基百科",
@@ -44,7 +44,7 @@ export const CN_PLUGINS: BuiltinPlugin[] = [
     createdAt: 1694235989000,
     enable: false,
     onlyNodeRuntime: false,
-    billing:'免 费，但问题token略有增加'
+    billing:'免 费，但问答token略有增加'
   },
   {
     name: "DALL·E",
