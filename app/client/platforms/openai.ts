@@ -89,6 +89,7 @@ export class ChatGPTApi implements LLMApi {
         text: v.content,
       });
       if (v.image_url) {
+        /*
         await fetch(v.image_url)
             .then((response) => response.arrayBuffer())
             .then((buffer) => {
@@ -105,6 +106,13 @@ export class ChatGPTApi implements LLMApi {
             .catch((error) => {
               console.error(error);
             });
+        */
+        message.content.push({
+          type: "image_url",
+          image_url: {
+            url: v.image_url,
+          },
+        });
       }
       messages.push(message);
     }

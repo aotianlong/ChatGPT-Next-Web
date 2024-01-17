@@ -27,6 +27,7 @@ export type ChatMessage = RequestMessage & {
   model?: ModelType;
 
   toolMessages?: ChatToolMessage[];
+  image_url?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -103,7 +104,7 @@ interface ChatStore {
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (content: string, isMember: boolean) => Promise<void>;
+  onUserInput: (content: string, isMember: boolean, image_url?: string) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -310,7 +311,7 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         const userContent = fillTemplateWith(content, modelConfig);
-        console.log("[User Input] after template: ", userContent);
+        console.log("[User Input] after template: ", userContent, 'image_url', image_url);
 
         const userMessage: ChatMessage = createMessage({
           role: "user",
@@ -357,7 +358,7 @@ export const useChatStore = createPersistStore(
         if (config.pluginConfig.enable && session.mask.usePlugins&&
             allPlugins.length > 0 &&
             modelConfig.model != "gpt-4-vision-preview") {
-          console.log("[ToolAgent] start");
+          console.log("[ToolAgent] start", "sendMessages", sendMessages);
           const pluginToolNames = allPlugins.map((m) => m.toolName);
           api.llm.toolAgentChat({
             messages: sendMessages,
@@ -424,6 +425,7 @@ export const useChatStore = createPersistStore(
           });
         } else {
           // make request
+          console.log('call api.llm.chat')
           api.llm.chat({
             messages: sendMessages,
             config: { ...modelConfig, stream: true },

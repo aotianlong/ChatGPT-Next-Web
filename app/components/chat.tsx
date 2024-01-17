@@ -577,36 +577,34 @@ export function ChatActions(props: {
         icon={<RobotIcon />}
       />
 
-        {/*{currentModel == "gpt-4-vision-preview" && (*/}
-        {/*    <ChatAction*/}
-        {/*        onClick={selectImage}*/}
-        {/*        text="选择图片"*/}
-        {/*        icon={<UploadIcon />}*/}
-        {/*        innerNode={*/}
-        {/*          <input*/}
-        {/*              type="file"*/}
-        {/*              accept=".png,.jpg,.webp,.jpeg"*/}
-        {/*              id="chat-image-file-select-upload"*/}
-        {/*              style={{ display: "none" }}*/}
-        {/*              onChange={onImageSelected}*/}
-        {/*          />*/}
-        {/*        }*/}
-        {/*    />*/}
-        {/*)}*/}
-
-        {config.pluginConfig.enable &&
-            currentModel != "gpt-4-vision-preview" && (
-
-            <ChatAction
-            onClick={switchUsePlugins}
-            text={
-              usePlugins
-                  ? Locale.Chat.InputActions.OpenTools
-                  : Locale.Chat.InputActions.CloseTools
-            }
-            icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
+      {currentModel == "gpt-4-vision-preview" && (
+        <ChatAction
+          onClick={selectImage}
+          text="选择图片"
+          icon={<UploadIcon />}
+          innerNode={
+            <input
+              type="file"
+              accept=".png,.jpg,.webp,.jpeg"
+              id="chat-image-file-select-upload"
+              style={{ display: "none" }}
+              onChange={onImageSelected}
+            />
+          }
         />
-        )}
+      )}
+
+      {config.pluginConfig.enable && currentModel != "gpt-4-vision-preview" && (
+        <ChatAction
+          onClick={switchUsePlugins}
+          text={
+            usePlugins
+                ? Locale.Chat.InputActions.OpenTools
+                : Locale.Chat.InputActions.CloseTools
+          }
+          icon={usePlugins ? <EnablePluginIcon /> : <DisablePluginIcon />}
+        />
+      )}
 
       {showModelSelector && (
         <Selector
@@ -811,12 +809,12 @@ function _Chat() {
     }
     setIsLoading(true);
     const isMember = await isCardMember()
-    console.log('isMember', isMember)
+    console.log('isMember', isMember, 'userImage', userImage)
     chatStore
-        .onUserInput(userInput, userImage?.base64)
+        .onUserInput(userInput, isMember, userImage?.base64)
         .then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
-    localStorage.setItem(LAST_INPUT_IMAGE_KEY, userImage);
+    localStorage.setItem(LAST_INPUT_IMAGE_KEY, JSON.stringify(userImage));
     setUserInput("");
     setPromptHints([]);
     setUserImage(null);
@@ -883,7 +881,7 @@ function _Chat() {
       userInput.length <= 0 &&
       !(e.metaKey || e.altKey || e.ctrlKey)
     ) {
-      setUserImage(localStorage.getItem(LAST_INPUT_IMAGE_KEY));
+      setUserImage(JSON.parse(localStorage.getItem(LAST_INPUT_IMAGE_KEY) || 'null'));
       setUserInput(localStorage.getItem(LAST_INPUT_KEY) ?? "");
       e.preventDefault();
       return;
@@ -1467,8 +1465,7 @@ function _Chat() {
                 >
                   <Image
                       src={userImage.base64}
-                      alt={userImage.filename}
-                      title={userImage.filename}
+                      alt="image"
                       layout="fill"
                       objectFit="cover"
                       objectPosition="center"
