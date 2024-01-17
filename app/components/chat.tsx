@@ -102,6 +102,7 @@ import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 
 import Image from "next/image";
+import { imageUrlToBase64 } from "../mbm/utils";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -464,18 +465,68 @@ export function ChatActions(props: {
     document.getElementById("chat-image-file-select-upload")?.click();
   }
 
-  const onImageSelected = (e: any) => {
+  let accessStore2 = useAccessStore();
+  const onImageSelected = async (e: any) => {
     const file = e.target.files[0];
     const filename = file.name;
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64 = reader.result;
-      props.imageSelected({
-        filename,
-        base64,
+
+    function readFile(file: File) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const base64 = reader.result;
+          resolve(base64)
+        };
+      })
+    }
+
+    function uploadFile(file: File) {
+      const { accessCode } = accessStore2
+      console.log('headers',file, accessStore2, accessCode)
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      return fetch('https://openai-service.mbmzone.com/api/oss/uploadOSS', {
+        method: 'POST',
+        headers: {
+          "api-key": accessCode,
+        },
+        /*
+        headers: {
+          // 'Content-Type': 'application/json',
+          ...headers,
+          apiKey: accessCode,
+          "api-key": accessCode,
+          "access-key": accessCode,
+        },
+        */
+        body: formData,
+      }).then((res) => {
+        if (res.ok) {
+          return res.json().then((json) => {
+            if(json.code === 11000) {
+              return json.data
+            } else {
+              return Promise.reject(json.msg)
+            }
+          }).then((data) => {
+            console.log('data', data)
+            return data.url
+          });
+        }
       });
-    };
+    }
+
+    const base64 = await readFile(file)
+    const url = await uploadFile(file)
+    console.log("base64", base64, url)
+    props.imageSelected({
+      filename,
+      url,
+      base64,
+    });
     e.target.value = null;
   };
 
@@ -588,7 +639,7 @@ export function ChatActions(props: {
               accept=".png,.jpg,.webp,.jpeg"
               id="chat-image-file-select-upload"
               style={{ display: "none" }}
-              onChange={onImageSelected}
+              onChange={(e) => onImageSelected(e)}
             />
           }
         />
@@ -811,7 +862,7 @@ function _Chat() {
     const isMember = await isCardMember()
     console.log('isMember', isMember, 'userImage', userImage)
     chatStore
-        .onUserInput(userInput, isMember, userImage?.base64)
+        .onUserInput(userInput, isMember, userImage)
         .then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     localStorage.setItem(LAST_INPUT_IMAGE_KEY, JSON.stringify(userImage));
@@ -913,7 +964,7 @@ function _Chat() {
     deleteMessage(msgId);
   };
 
-  const onResend = (message: ChatMessage) => {
+  const onResend = async (message: ChatMessage) => {
     // when it is resending a message
     // 1. for a user's message, find the next bot response
     // 2. for a bot's message, find the last user's input
@@ -963,7 +1014,19 @@ function _Chat() {
 
     // resend the message
     setIsLoading(true);
-    chatStore.onUserInput(userMessage.content).then(() => setIsLoading(false));
+
+    const isMember = await isCardMember()
+    let image = userMessage.image
+    if (image?.url) {
+      const base64 = await imageUrlToBase64(image.url)
+      image.base64 = base64
+      userMessage.image = image
+    }
+    const sendMessage = {
+      ...userMessage
+    }
+    console.log('resend message', sendMessage)
+    chatStore.onUserInput(userMessage.content, isMember, sendMessage).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
@@ -1020,7 +1083,7 @@ function _Chat() {
                 ...createMessage({
                   role: "user",
                   content: userInput,
-                  image_url: userImage?.base64,
+                  image: {...userImage, base64: undefined}, // 去掉base64
                 }),
                 preview: true,
               },
@@ -1372,7 +1435,7 @@ function _Chat() {
                   <div className={styles["chat-message-item"]}>
                     <Markdown
                         // imageBase64={isUser && userImage && userImage.base64}
-                        imageBase64={message.image_url}
+                        imageBase64={message.image?.url}
                         content={message.content}
                       loading={
                         (message.preview || message.streaming) &&
@@ -1465,7 +1528,7 @@ function _Chat() {
                 >
                   <Image
                       src={userImage.base64}
-                      alt="image"
+                      alt={userImage.filename}
                       layout="fill"
                       objectFit="cover"
                       objectPosition="center"

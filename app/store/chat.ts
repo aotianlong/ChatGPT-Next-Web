@@ -27,7 +27,7 @@ export type ChatMessage = RequestMessage & {
   model?: ModelType;
 
   toolMessages?: ChatToolMessage[];
-  image_url?: string;
+  image: any;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -104,7 +104,7 @@ interface ChatStore {
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (content: string, isMember: boolean, image_url?: string) => Promise<void>;
+  onUserInput: (content: string, isMember: boolean, image?: any) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -306,17 +306,17 @@ export const useChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string, isCardMember = false, image_url?: string) {
+      async onUserInput(content: string, isCardMember = false, image?: any) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
         const userContent = fillTemplateWith(content, modelConfig);
-        console.log("[User Input] after template: ", userContent, 'image_url', image_url);
+        console.log("[User Input] after template: ", userContent, 'image', image);
 
         const userMessage: ChatMessage = createMessage({
           role: "user",
           content: userContent,
-          image_url: image_url,
+          image,
         });
 
         const botMessage: ChatMessage = createMessage({
@@ -350,6 +350,10 @@ export const useChatStore = createPersistStore(
           const savedUserMessage = {
             ...userMessage,
             content,
+            image: {
+              ...userMessage.image,
+              base64: null,
+            }
           };
           session.messages.push(savedUserMessage);
           session.messages.push(botMessage);

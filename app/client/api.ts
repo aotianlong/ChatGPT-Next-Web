@@ -14,7 +14,7 @@ export interface RequestMessage {
   role: MessageRole;
   content: string;
 
-  image_url?: string;
+  image: any;
 
 }
 
