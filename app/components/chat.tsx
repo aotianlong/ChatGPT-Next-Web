@@ -521,11 +521,11 @@ export function ChatActions(props: {
 
     const base64 = await readFile(file)
     const url = await uploadFile(file)
-    console.log("base64", base64, url)
+    // console.log("base64", base64, url)
     props.imageSelected({
       filename,
       url,
-      base64,
+      // base64,
     });
     e.target.value = null;
   };
@@ -1017,11 +1017,13 @@ function _Chat() {
 
     const isMember = await isCardMember()
     let image = userMessage.image
+    /*
     if (image?.url) {
       const base64 = await imageUrlToBase64(image.url)
       image.base64 = base64
       userMessage.image = image
     }
+    */
     const sendMessage = {
       ...userMessage
     }
@@ -1083,7 +1085,7 @@ function _Chat() {
                 ...createMessage({
                   role: "user",
                   content: userInput,
-                  image: {...userImage, base64: undefined}, // 去掉base64
+                  image: userImage
                 }),
                 preview: true,
               },
@@ -1096,7 +1098,7 @@ function _Chat() {
     isLoading,
     session.messages,
     userInput,
-    userImage?.base64,
+    userImage,
   ]);
 
   const [msgRenderIndex, _setMsgRenderIndex] = useState(
@@ -1527,7 +1529,7 @@ function _Chat() {
                     style={{ position: "relative", width: "48px", height: "48px" }}
                 >
                   <Image
-                      src={userImage.base64}
+                      src={userImage.url}
                       alt={userImage.filename}
                       layout="fill"
                       objectFit="cover"
@@ -1535,7 +1537,7 @@ function _Chat() {
                   />
                 </div>
                 <button
-                    className={styles["chat-input-image-close"]}
+                    className={[styles["chat-input-image-close"], "text-gray-6"]}
                     onClick={() => {
                       setUserImage(null);
                     }}

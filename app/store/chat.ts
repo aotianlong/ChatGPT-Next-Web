@@ -350,10 +350,6 @@ export const useChatStore = createPersistStore(
           const savedUserMessage = {
             ...userMessage,
             content,
-            image: {
-              ...userMessage.image,
-              base64: null,
-            }
           };
           session.messages.push(savedUserMessage);
           session.messages.push(botMessage);

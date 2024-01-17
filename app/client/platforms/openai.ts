@@ -88,7 +88,7 @@ export class ChatGPTApi implements LLMApi {
         type: "text",
         text: v.content,
       });
-      if (v.image?.base64) {
+      if (false && v.image?.base64) {
         let base64 = v.image.base64;
         /*
         await fetch(v.image_url)
@@ -112,6 +112,13 @@ export class ChatGPTApi implements LLMApi {
           type: "image_url",
           image_url: {
             url: base64
+          },
+        });
+      } else if (v.image?.url) {
+        message.content.push({
+          type: "image_url",
+          image_url: {
+            url: v.image.url,
           },
         });
       }

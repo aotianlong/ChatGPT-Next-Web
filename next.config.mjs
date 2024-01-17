@@ -30,6 +30,7 @@ const nextConfig = {
   output: mode,
   images: {
     unoptimized: mode === "export",
+    domains: ['gpt-server.oss-cn-beijing.aliyuncs.com'],
   },
   experimental: {
     forceSwcTransforms: true,
