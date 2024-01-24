@@ -19,6 +19,7 @@ const completionPrice = {
 	'gpt-4-32k-0613': 0.24,
 	'gpt-4-1106-preview': 0.06,
 	'gpt-4-vision-preview': 0.06,
+	'gpt-4-1106-128k': 0.06,
 }
 
 const promptPrice = {
@@ -39,6 +40,7 @@ const promptPrice = {
 	'gpt-4-32k-0613': 0.12,
 	'gpt-4-1106-preview': 0.02,
 	'gpt-4-vision-preview': 0.02,
+	'gpt-4-1106-128k': 0.02,
 }
 
 export default function TokensNotice(props: {
