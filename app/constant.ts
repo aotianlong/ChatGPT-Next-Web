@@ -136,6 +136,10 @@ export const DEFAULT_MODELS = [
     available: true,
   },
   {
+    name: "gpt-4-1106-128k",
+    available: true,
+  },
+  {
     name: "gpt-3.5-turbo",
     available: true,
   },
