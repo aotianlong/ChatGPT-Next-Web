@@ -210,7 +210,7 @@ export function Home() {
       });
 
       const isMember = await isCardMember()
-      const model = isMember ? 'gpt-3.5-turbo' : 'gpt-4-1106-128k'
+      const model = isMember ? 'gpt-3.5-turbo' : 'gpt-4-1106-preview'
       console.log('isCardMember', isMember, model);
       config.modelConfig.model = model;
       const modelConfig = {...config.modelConfig};
