@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "cross-env BUILD_MODE=standalone next build",
-    "deploy": "ssh ubuntu@mchat.mbmzone.com 'cd /data/apps/mchat.mbmzone.com && git pull && /home/ubuntu/.nvm/versions/node/v18.16.0/bin/yarn build && systemctl restart mchat'",
+    "deploy": "ssh ubuntu@mchat.mbmzone.com 'cd /data/apps/mchat.mbmzone.com && git pull && /home/ubuntu/.nvm/versions/node/v18.16.0/bin/yarn build && sudo systemctl restart mchat'",
     "start": "next start",
     "lint": "next lint",
     "export": "cross-env BUILD_MODE=export BUILD_APP=1 next build",
