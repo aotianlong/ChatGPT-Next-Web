@@ -13,6 +13,7 @@ import { getCSSVar, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
+import { sslogin } from "../mbm/login";
 
 import { getISOLang, getLang } from "../locales";
 
@@ -29,6 +30,7 @@ import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
+import { isCardMember } from "../mbm/card-member";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -229,6 +231,31 @@ export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
+
+  const accessStore = useAccessStore();
+  const config = useAppConfig();
+  sslogin({
+    isLoggedIn() {
+      return accessStore.token;
+    },
+    async handleAccount(account: any) {
+      accessStore.token = account.accessKey; //先设置accessKey
+      const isMember = await isCardMember();
+      const model = isMember ? "gpt-3.5-turbo" : "gpt-4o";
+      console.log("isCardMember", isMember, model);
+      config.modelConfig.model = model;
+
+      accessStore.update((access) => {
+        access.useCustomConfig = true;
+        access.openaiApiKey = account.accessKey;
+        access.accessCode = account.accessKey;
+      });
+
+      const modelConfig = { ...config.modelConfig };
+      modelConfig.model = model;
+      config.update((config) => (config.modelConfig = modelConfig));
+    },
+  });
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());

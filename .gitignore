@@ -46,3 +46,7 @@ dev
 *.key.pub
 
 masks.json
+
+
+*.swo
+*.swp

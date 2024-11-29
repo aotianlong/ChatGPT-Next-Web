@@ -8,11 +8,19 @@ import { useAllModels } from "../utils/hooks";
 import { groupBy } from "lodash-es";
 import styles from "./model-config.module.scss";
 import { getModelProvider } from "../utils/model";
+import { isCardMember } from "@/app/mbm/card-member";
+import { useEffect, useState } from "react";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
+  const [iIsCardMember, setIIsCardMember] = useState(true);
+  useEffect(() => {
+    isCardMember().then((res) => {
+      setIIsCardMember(res);
+    });
+  });
   const allModels = useAllModels();
   const groupModels = groupBy(
     allModels.filter((v) => v.available),
@@ -38,6 +46,8 @@ export function ModelConfigList(props: {
             });
           }}
         >
+          {iIsCardMember && <option value="gpt-3.5-turbo">GPT-周卡</option>}
+
           {Object.keys(groupModels).map((providerName, index) => (
             <optgroup label={providerName} key={index}>
               {groupModels[providerName].map((v, i) => (

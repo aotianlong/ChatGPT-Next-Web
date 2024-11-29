@@ -362,7 +362,11 @@ export const useChatStore = createPersistStore(
         get().summarizeSession(false, targetSession);
       },
 
-      async onUserInput(content: string, attachImages?: string[]) {
+      async onUserInput(
+        content: string,
+        attachImages?: string[],
+        isCardMember = false,
+      ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 

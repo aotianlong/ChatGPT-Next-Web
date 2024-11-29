@@ -4,7 +4,6 @@ import styles from "./home.module.scss";
 
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
@@ -23,7 +22,6 @@ import {
   NARROW_SIDEBAR_WIDTH,
   Path,
   PLUGINS,
-  REPO_URL,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -169,23 +167,39 @@ export function SideBarHeader(props: {
   shouldNarrow?: boolean;
 }) {
   const { title, subTitle, logo, children, shouldNarrow } = props;
+
+  debugger;
+  const config = useAppConfig();
+
+  let theme = config.theme;
+
+  let themetext = null;
+  if (theme === "auto") {
+    /*判断是否处于深色模式*/
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      themetext = "dark";
+    }
+
+    /*判断是否处于浅色模式*/
+    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+      themetext = "light";
+    }
+  } else if (theme === "dark") {
+    themetext = "dark";
+  } else if (theme === "light") {
+    themetext = "light";
+  }
+
+  const darkMode = themetext == "dark";
+
   return (
     <Fragment>
-      <div
-        className={clsx(styles["sidebar-header"], {
-          [styles["sidebar-header-narrow"]]: shouldNarrow,
-        })}
-        data-tauri-drag-region
-      >
-        <div className={styles["sidebar-title-container"]}>
-          <div className={styles["sidebar-title"]} data-tauri-drag-region>
-            {title}
-          </div>
-          <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
-        </div>
-        <div className={clsx(styles["sidebar-logo"], "no-dark")}>{logo}</div>
-      </div>
-      {children}
+      <a href="https://openai.mbmzone.com" target="_blank">
+        <img
+          src={darkMode ? "/mbmlogo-light.png" : "/mbmlogo-dark.png"}
+          style={{ width: "100%", height: "60px" }}
+        />
+      </a>
     </Fragment>
   );
 }
@@ -231,7 +245,7 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="NextChat"
+        title="MBM AI"
         subTitle="Build your own AI assistant."
         logo={<ChatGptIcon />}
         shouldNarrow={shouldNarrow}
@@ -307,12 +321,11 @@ export function SideBar(props: { className?: string }) {
               </Link>
             </div>
             <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-                <IconButton
-                  aria={Locale.Export.MessageFromChatGPT}
-                  icon={<GithubIcon />}
-                  shadow
-                />
+              <a
+                href="https://openai.mbmzone.com/mbm-gpt/recharge"
+                target="_blank"
+              >
+                <IconButton text="充值我的账户"></IconButton>
               </a>
             </div>
           </>

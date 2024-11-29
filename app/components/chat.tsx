@@ -47,6 +47,8 @@ import PluginIcon from "../icons/plugin.svg";
 import ShortcutkeyIcon from "../icons/shortcutkey.svg";
 import ReloadIcon from "../icons/reload.svg";
 import HeadphoneIcon from "../icons/headphone.svg";
+import TokensNotice from "../mbm/tokens-notice";
+import { isCardMember } from "../mbm/card-member";
 import {
   ChatMessage,
   SubmitKey,
@@ -1053,7 +1055,7 @@ function _Chat() {
     }
   };
 
-  const doSubmit = (userInput: string) => {
+  const doSubmit = async (userInput: string) => {
     if (userInput.trim() === "" && isEmpty(attachImages)) return;
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
@@ -1063,8 +1065,11 @@ function _Chat() {
       return;
     }
     setIsLoading(true);
+
+    const isMember = await isCardMember();
+
     chatStore
-      .onUserInput(userInput, attachImages)
+      .onUserInput(userInput, attachImages, isMember)
       .then(() => setIsLoading(false));
     setAttachImages([]);
     chatStore.setLastInput(userInput);
@@ -1955,6 +1960,12 @@ function _Chat() {
                       </div>
                     </div>
                     {shouldShowClearContextDivider && <ClearContextDivider />}
+                    {!isUser && (
+                      <TokensNotice
+                        isCardMember={isCardMember}
+                        completionText={message.content}
+                      />
+                    )}
                   </Fragment>
                 );
               })}
@@ -2045,6 +2056,12 @@ function _Chat() {
                 />
               </label>
             </div>
+            {
+              <TokensNotice
+                promptText={userInput}
+                isCardMember={isCardMember}
+              />
+            }
           </div>
           <div
             className={clsx(styles["chat-side-panel"], {
