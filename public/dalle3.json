@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "BASE_URL=https://openai.yingjin.pro"
+      "url": "https://openai.yingjin.pro"
     }
   ],
   "paths": {
