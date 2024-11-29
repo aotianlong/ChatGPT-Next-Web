@@ -5,14 +5,21 @@ const completionPrice = {
   "gpt-4": 0.12,
   "gpt-4-32k": 0.24,
   "gpt-3.5-turbo": 0.004,
-  "gpt-4o": 0.00001,
+  "gpt-4o": 0.01,
+
+  "gpt-4o-mini": 0.0004,
+  "o1-preview": 0.03,
+  "o1-mini": 0.006,
 };
 
 const promptPrice = {
   "gpt-4": 0.06,
   "gpt-4-32k": 0.12,
   "gpt-3.5-turbo": 0.004,
-  "gpt-4o": 0.00003,
+  "gpt-4o": 0.03,
+  "gpt-4o-mini": 0.0012,
+  "o1-preview": 0.12,
+  "o1-mini": 0.024,
 };
 
 export default function TokensNotice(props: {

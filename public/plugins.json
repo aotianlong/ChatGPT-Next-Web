@@ -2,7 +2,7 @@
   {
     "id": "dalle3",
     "name": "Dalle3",
-    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/dalle/openapi.json"
+    "schema": "https://mchat.mbmzone.com/dalle3.json"
   },
   {
     "id": "arxivsearch",

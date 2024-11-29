@@ -167,8 +167,6 @@ export function SideBarHeader(props: {
   shouldNarrow?: boolean;
 }) {
   const { title, subTitle, logo, children, shouldNarrow } = props;
-
-  debugger;
   const config = useAppConfig();
 
   let theme = config.theme;
@@ -194,12 +192,27 @@ export function SideBarHeader(props: {
 
   return (
     <Fragment>
-      <a href="https://openai.mbmzone.com" target="_blank">
-        <img
-          src={darkMode ? "/mbmlogo-light.png" : "/mbmlogo-dark.png"}
-          style={{ width: "100%", height: "60px" }}
-        />
-      </a>
+      <div
+        className={clsx(styles["sidebar-header"], {
+          [styles["sidebar-header-narrow"]]: shouldNarrow,
+        })}
+        data-tauri-drag-region
+      >
+        {/*<div className={styles["sidebar-title-container"]}>*/}
+        {/*  <div className={styles["sidebar-title"]} data-tauri-drag-region>*/}
+        {/*    {title}*/}
+        {/*  </div>*/}
+        {/*  <div className={styles["sidebar-sub-title"]}>{subTitle}</div>*/}
+        {/*</div>*/}
+        <a href="https://openai.mbmzone.com" target="_blank">
+          <img
+            src={darkMode ? "/mbmlogo-light.png" : "/mbmlogo-dark.png"}
+            style={{ width: "100%", height: "60px" }}
+          />
+        </a>
+        <div className={clsx(styles["sidebar-logo"], "no-dark")}>{logo}</div>
+      </div>
+      {children}
     </Fragment>
   );
 }
