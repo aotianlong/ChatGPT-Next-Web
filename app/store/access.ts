@@ -61,10 +61,10 @@ const DEFAULT_ACCESS_STATE = {
   openaiUrl: DEFAULT_OPENAI_URL,
   openaiApiKey: "",
 
-  // azure
-  azureUrl: "",
-  azureApiKey: "",
-  azureApiVersion: "2023-08-01-preview",
+  // // azure
+  // azureUrl: "",
+  // azureApiKey: "",
+  // azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
   googleUrl: DEFAULT_GOOGLE_URL,
@@ -149,9 +149,9 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["openaiApiKey"]);
     },
 
-    isValidAzure() {
-      return ensure(get(), ["azureUrl", "azureApiKey", "azureApiVersion"]);
-    },
+    // isValidAzure() {
+    //   return ensure(get(), ["azureUrl", "azureApiKey", "azureApiVersion"]);
+    // },
 
     isValidGoogle() {
       return ensure(get(), ["googleApiKey"]);
@@ -198,7 +198,7 @@ export const useAccessStore = createPersistStore(
       // has token or has code or disabled access control
       return (
         this.isValidOpenAI() ||
-        this.isValidAzure() ||
+        // this.isValidAzure() ||
         this.isValidGoogle() ||
         this.isValidAnthropic() ||
         this.isValidBaidu() ||
