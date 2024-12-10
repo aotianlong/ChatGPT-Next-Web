@@ -38,8 +38,7 @@ export default function TokensNotice(props: {
 
   //model应该拿当前session的
   const model = currentSession.mask.modelConfig.model;
-
-  if (model === "dall-e-3") {
+  if (model === "dall-e-3" || Array.isArray(props.completionText)) {
     return (
       <div
         className="flex gap-2 text-gray-400 text-sm"
@@ -52,7 +51,9 @@ export default function TokensNotice(props: {
 
   const sendMemory = state.modelConfig.sendMemory;
   const historyMessageCount = state.modelConfig.historyMessageCount;
-  const completionTokens = encode(props.completionText || "").length;
+  const completionTokens = encode(
+    Array.isArray(props.completionText) ? "" : props.completionText || "",
+  ).length;
   // 获取contents的最后historyMessageCount条消息
   const historyContents = contents.slice(-historyMessageCount);
   const isCardMember = props.isCardMember;
@@ -61,6 +62,7 @@ export default function TokensNotice(props: {
   if (sendMemory) {
     promptText = historyContents.join("") + promptText;
   }
+
   const promptTokens = encode(promptText).length;
   const totalCost =
     completionPrice[model] * completionTokens +

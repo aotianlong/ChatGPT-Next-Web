@@ -645,7 +645,7 @@ const cn = {
     },
   },
   Plugin: {
-    Name: "插件",
+    Name: "插件(个别插件会隐性增加token消耗数量)",
     Page: {
       Title: "插件",
       SubTitle: (count: number) => `${count} 个插件`,
