@@ -51,7 +51,7 @@ export enum Path {
 
 export enum ApiPath {
   Cors = "",
-  Azure = "/api/azure",
+  // Azure = "/api/azure",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
   Google = "/api/google",
@@ -107,7 +107,7 @@ export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
 export enum ServiceProvider {
   OpenAI = "OpenAI",
-  // Azure = "Azure",
+  Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
   Baidu = "Baidu",
@@ -167,11 +167,10 @@ export const OpenaiPath = {
 };
 
 export const Azure = {
-  ChatPath: (deployName: string, apiVersion: string) =>
-    `deployments/${deployName}/chat/completions?api-version=${apiVersion}`,
+  ChatPath: (deployName: string, apiVersion: string) => `v1/chat/completions`,
   // https://<your_resource_name>.openai.azure.com/openai/deployments/<your_deployment_name>/images/generations?api-version=<api_version>
   ImagePath: (deployName: string, apiVersion: string) =>
-    `deployments/${deployName}/images/generations?api-version=${apiVersion}`,
+    `v1/images/generations`,
   ExampleEndpoint: "https://{resource-url}/openai",
 };
 
