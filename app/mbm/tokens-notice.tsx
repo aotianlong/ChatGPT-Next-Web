@@ -10,6 +10,9 @@ const completionPrice = {
   "gpt-4o-mini": 0.0004,
   "o1-preview": 0.03,
   "o1-mini": 0.006,
+  "claude-3-5-haiku-20241022": 0.002,
+  "claude-3-5-sonnet-20241022": 0.006,
+  "claude-3-opus-20240229": 0.03,
 };
 
 const promptPrice = {
@@ -20,6 +23,9 @@ const promptPrice = {
   "gpt-4o-mini": 0.0012,
   "o1-preview": 0.12,
   "o1-mini": 0.024,
+  "claude-3-5-haiku-20241022": 0.01,
+  "claude-3-5-sonnet-20241022": 0.03,
+  "claude-3-opus-20240229": 0.15,
 };
 
 export default function TokensNotice(props: {
